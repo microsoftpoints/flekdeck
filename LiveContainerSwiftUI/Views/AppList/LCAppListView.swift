@@ -772,7 +772,7 @@ guard urlToOpen != "" else {
     return
 }
 
-                    }
+                    
                     await openWebView(urlString: urlToOpen)
                 }
             }
