@@ -576,7 +576,6 @@ struct LCAppListView : View, LCAppBannerDelegate, LCAppModelDelegate {
     set: { newValue in if !newValue { jitNotReadyMessage = nil } }
 )) {
 
-        )) {
             if waitingLaunch == nil {
                 Button("lc.tabView.settings".loc) {
                     handleHomeTap(.defaultApp(.settings))
