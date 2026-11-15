@@ -571,9 +571,11 @@ struct LCAppListView : View, LCAppBannerDelegate, LCAppModelDelegate {
         } message: {
             Text(errorInfo)
         }
-        .alert(jitNotReadyTitle, isPresented: Binding(
-            get: { jitNotReadyMessage != nil },
-            set: { if !$0 { jitNotReadyMessage = nil } }
+        .alert(jitNotReadyTitle, isPresented: Binding<Bool>(
+    get: { return jitNotReadyMessage != nil },
+    set: { newValue in if !newValue { jitNotReadyMessage = nil } }
+)) {
+
         )) {
             if waitingLaunch == nil {
                 Button("lc.tabView.settings".loc) {
