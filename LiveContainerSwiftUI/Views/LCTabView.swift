@@ -755,3 +755,89 @@ private enum ScreenEdgeGestureDeferrer {
         }
     }
 }
+// === DÁN VÀO SAU DÒNG 757 ===
+struct FlekLockOverlay: View {
+    @Binding var isLocked: Bool
+    @State private var inputCode = ""
+    @State private var shakeOffset: CGFloat = 0
+    let passcode = "1234" // Đổi mật mã 4 số tại đây nếu muốn
+
+    var body: some View {
+        ZStack {
+            // Lớp kính mờ giữ nguyên 100% hình nền màn hình chính phía sau
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 25) {
+                Text(Date.now, format: .dateTime.hour().minute())
+                    .font(.system(size: 68, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+                    .padding(.top, 40)
+                
+                Text("Nhập mật mã FlekDeck")
+                    .font(.headline)
+                    .foregroundColor(.white.opacity(0.9))
+                
+                HStack(spacing: 18) {
+                    ForEach(0..<4, id: \.self) { index in
+                        Circle()
+                            .fill(index < inputCode.count ? Color.white : Color.white.opacity(0.3))
+                            .frame(width: 15, height: 15)
+                    }
+                }
+                .offset(x: shakeOffset)
+                .padding(.bottom, 15)
+                
+                let rows = [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], ["", "0", "⌫"]]
+                VStack(spacing: 16) {
+                    ForEach(rows, id: \.self) { row in
+                        HStack(spacing: 24) {
+                            ForEach(row, id: \.self) { key in
+                                if key.isEmpty {
+                                    Color.clear.frame(width: 72, height: 72)
+                                } else {
+                                    Button(action: { handleKey(key) }) {
+                                        Text(key)
+                                            .font(.system(size: 28, weight: .medium))
+                                            .foregroundColor(.white)
+                                            .frame(width: 72, height: 72)
+                                            .background(Color.white.opacity(0.15))
+                                            .clipShape(Circle())
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                Spacer()
+            }
+        }
+    }
+
+    func handleKey(_ key: String) {
+        if key == "⌫" {
+            if !inputCode.isEmpty { inputCode.removeLast() }
+        } else if inputCode.count < 4 {
+            inputCode.append(key)
+        }
+        
+        if inputCode.count == 4 {
+            if inputCode == passcode {
+                withAnimation(.easeOut(duration: 0.25)) {
+                    isLocked = false
+                }
+                inputCode = ""
+            } else {
+                withAnimation(.default) { shakeOffset = 12 }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    withAnimation(.default) { shakeOffset = -12 }
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    withAnimation(.default) { shakeOffset = 0 }
+                    inputCode = ""
+                }
+            }
+        }
+    }
+}
