@@ -765,8 +765,13 @@ guard let link = sharedModel.deepLink else { return }
             _ = provider.loadObject(ofClass: URL.self) { url, error in
                 guard let url else { return }
                 Task {
-                    guard let urlToOpen = await webViewUrlInput.open(initVal: url.absoluteString), urlToOpen != "" else {
-                        return
+                    guard let urlToOpen = await webViewUrlInput.open(initVal: url.absoluteString) else {
+    return
+}
+guard urlToOpen != "" else {
+    return
+}
+
                     }
                     await openWebView(urlString: urlToOpen)
                 }
