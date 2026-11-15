@@ -30,6 +30,7 @@ struct LCTabView: View {
     @EnvironmentObject var sceneDelegate: SceneDelegate
     @State var shouldToggleMainWindowOpen = false
     @Environment(\.scenePhase) var scenePhase
+@State private var isLocked = true
 
     
     @StateObject var searchContextAppList = SearchContext()
@@ -60,6 +61,7 @@ struct LCTabView: View {
                 LCAppListView(searchContext: searchContextAppList)
             }
         }
+        .overlay { if isLocked { FlekLockOverlay(isLocked: $isLocked) } }
         .modifier(DeferBottomHomeGestureModifier())
         .alert("lc.common.error".loc, isPresented: $errorShow) {
             Button("lc.common.ok".loc) {}
