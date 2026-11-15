@@ -747,7 +747,9 @@ struct LCAppListView : View, LCAppBannerDelegate, LCAppModelDelegate {
                     UserDefaults.standard.set(nil, forKey: "webPageToOpen")
                 }
                 
-                guard sharedModel.selectedTab == .apps, let link = sharedModel.deepLink else { return }
+                guard sharedModel.selectedTab == .apps else { return }
+guard let link = sharedModel.deepLink else { return }
+
                 sharedModel.deepLink = nil
                 handleURL(url: link)
                 isViewAppeared = true
